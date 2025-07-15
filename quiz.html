@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Periodic Table Quiz</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 60%;
+            max-width: 700px;
+        }
+        .option-btn, .btn {
+            margin: 8px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .option-btn:hover, .btn:hover {
+            background: #0056b3;
+        }
+        .progress-bar {
+            width: 100%;
+            background: #eee;
+            border-radius: 8px;
+            margin-top: 15px;
+            height: 20px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #28a745;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
+        .certificate {
+            border: 3px solid gold;
+            padding: 20px;
+            border-radius: 15px;
+            background: #fff8dc;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quizContainer">
+    <h2>Enter Your Name:</h2>
+    <input type="text" id="nameInput" placeholder="Your name in BLOCK letters" style="padding:10px;width:60%;">
+    <br><br>
+    <button class="btn" onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<script>
+    const questions = [
+    { question: 'Symbol of Iron?', options: ['Fe', 'Ir', 'In', 'Io'], answer: 'Fe' },
+    { question: 'Atomic number of Carbon?', options: ['12', '6', '14', '8'], answer: '6' },
+    { question: 'Symbol of Gold?', options: ['Au', 'Ag', 'Gd', 'Go'], answer: 'Au' },
+    { question: 'Atomic number of Neon?', options: ['8', '10', '12', '14'], answer: '10' },
+    { question: 'Symbol of Mercury?', options: ['Hg', 'Mc', 'Mn', 'Me'], answer: 'Hg' },
+    { question: 'Symbol for Sodium?', options: ['Na', 'N', 'S', 'Sn'], answer: 'Na' },
+    { question: 'Symbol of Lead?', options: ['Pb', 'Pt', 'Pd', 'Pr'], answer: 'Pb' },
+    { question: 'Symbol of Potassium?', options: ['K', 'P', 'Pt', 'Po'], answer: 'K' },
+    { question: 'Atomic number of Oxygen?', options: ['6', '7', '8', '9'], answer: '8' },
+    { question: 'Element with atomic number 1?', options: ['H', 'He', 'Li', 'Be'], answer: 'H' },
+    { question: 'Lightest noble gas?', options: ['Helium', 'Neon', 'Argon', 'Krypton'], answer: 'Helium' },
+    { question: 'Most abundant element in Earth’s crust?', options: ['Oxygen', 'Silicon', 'Aluminum', 'Iron'], answer: 'Oxygen' },
+    { question: 'What is the symbol for Silver?', options: ['Ag', 'Au', 'Sb', 'Si'], answer: 'Ag' },
+    { question: 'Which element has the symbol Cu?', options: ['Copper', 'Cobalt', 'Carbon', 'Calcium'], answer: 'Copper' },
+    { question: 'Atomic number of Nitrogen?', options: ['5', '6', '7', '8'], answer: '7' },
+    { question: 'Symbol of Calcium?', options: ['Ca', 'Cl', 'C', 'Ce'], answer: 'Ca' },
+    { question: 'Gas essential for respiration?', options: ['Oxygen', 'Carbon Dioxide', 'Nitrogen', 'Hydrogen'], answer: 'Oxygen' },
+    { question: 'Liquid metal at room temperature?', options: ['Mercury', 'Lead', 'Iron', 'Aluminum'], answer: 'Mercury' },
+    { question: 'Atomic number of Chlorine?', options: ['17', '18', '16', '19'], answer: '17' },
+    { question: 'Symbol for Tin?', options: ['Sn', 'Ti', 'Tl', 'Ta'], answer: 'Sn' },
+    { question: 'Symbol of Zinc?', options: ['Zn', 'Zr', 'Zt', 'Zc'], answer: 'Zn' },
+    { question: 'Atomic number of Helium?', options: ['2', '3', '4', '1'], answer: '2' },
+    { question: 'Chemical symbol for Aluminum?', options: ['Al', 'Au', 'Ag', 'As'], answer: 'Al' },
+    { question: 'Element used in pencils?', options: ['Carbon', 'Lead', 'Graphite', 'Zinc'], answer: 'Carbon' },
+    { question: 'Atomic number of Phosphorus?', options: ['15', '14', '16', '17'], answer: '15' },
+    { question: 'Symbol for Fluorine?', options: ['F', 'Fl', 'Fr', 'Fe'], answer: 'F' },
+    { question: 'Symbol for Cobalt?', options: ['Co', 'Cb', 'Cu', 'Cl'], answer: 'Co' },
+    { question: 'Most reactive metals group?', options: ['Alkali metals', 'Transition metals', 'Noble gases', 'Lanthanides'], answer: 'Alkali metals' },
+    { question: 'Symbol for Silicon?', options: ['Si', 'S', 'Sn', 'Sc'], answer: 'Si' },
+    { question: 'Element in all living organisms?', options: ['Carbon', 'Nitrogen', 'Oxygen', 'Calcium'], answer: 'Carbon' },
+    { question: 'Symbol of Sulfur?', options: ['S', 'Si', 'Se', 'Sb'], answer: 'S' },
+    { question: 'Atomic number of Argon?', options: ['18', '17', '19', '20'], answer: '18' },
+    { question: 'Symbol for Barium?', options: ['Ba', 'B', 'Be', 'Bi'], answer: 'Ba' },
+    { question: 'Atomic number of Hydrogen?', options: ['1', '2', '3', '4'], answer: '1' },
+    { question: 'Symbol for Lithium?', options: ['Li', 'L', 'Lu', 'Ln'], answer: 'Li' },
+    { question: 'Symbol of Neon?', options: ['Ne', 'N', 'No', 'Nb'], answer: 'Ne' },
+    { question: 'Atomic number of Sodium?', options: ['11', '12', '13', '14'], answer: '11' },
+    { question: 'Symbol of Krypton?', options: ['Kr', 'Kp', 'Kt', 'K'], answer: 'Kr' },
+    { question: 'Atomic number of Aluminium?', options: ['13', '14', '15', '12'], answer: '13' },
+    { question: 'Symbol for Boron?', options: ['B', 'Br', 'Be', 'Ba'], answer: 'B' },
+    { question: 'Element known as Quicksilver?', options: ['Mercury', 'Silver', 'Gold', 'Platinum'], answer: 'Mercury' },
+    { question: 'Symbol of Nitrogen?', options: ['N', 'Ni', 'Ne', 'Na'], answer: 'N' },
+    { question: 'Atomic number of Fluorine?', options: ['9', '10', '11', '12'], answer: '9' },
+    { question: 'Symbol of Manganese?', options: ['Mn', 'Mg', 'Mo', 'Ma'], answer: 'Mn' },
+    { question: 'Example of a noble gas?', options: ['Argon', 'Oxygen', 'Nitrogen', 'Hydrogen'], answer: 'Argon' },
+    { question: 'Symbol of Chromium?', options: ['Cr', 'Cm', 'Co', 'Cu'], answer: 'Cr' },
+    { question: 'Atomic number of Zinc?', options: ['30', '29', '28', '31'], answer: '30' },
+    { question: 'Symbol of Vanadium?', options: ['V', 'Va', 'Ve', 'Vu'], answer: 'V' },
+    { question: 'Symbol of Phosphorus?', options: ['P', 'Ph', 'Ps', 'Pt'], answer: 'P' }
+];
+
+
+    let userName = '';
+    let score = 0;
+    let currentQuestionIndex = 0;
+    let shuffledQuestions = [];
+    let timeLeft = 5;
+    let timer;
+
+    function startQuiz() {
+        userName = document.getElementById('nameInput').value.trim().toUpperCase();
+        if (!userName) {
+            alert("Please enter your name.");
+            return;
+        }
+        score = 0;
+        currentQuestionIndex = 0;
+        shuffledQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (currentQuestionIndex >= shuffledQuestions.length) {
+            showResult();
+            return;
+        }
+        const current = shuffledQuestions[currentQuestionIndex];
+        document.getElementById('quizContainer').innerHTML = `
+            <h3>${current.question}</h3>
+            ${current.options.map(opt => `<button class='option-btn' onclick="checkAnswer('${opt}')">${opt}</button>`).join('')}
+            <p>Time Left: <span id='timeLeft'>5</span> seconds</p>
+            <div class="progress-bar"><div class="progress-bar-fill" id="progressFill">${score}</div></div>
+        `;
+        timeLeft = 5;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timeLeft').innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                checkAnswer('');
+            }
+        }, 1000);
+    }
+
+    function checkAnswer(selected) {
+        clearInterval(timer);
+        const current = shuffledQuestions[currentQuestionIndex];
+        let questionScore = 0;
+        if (selected === current.answer) {
+            questionScore = Math.max(0, 10 - (5 - timeLeft) * 2);
+            score += questionScore;
+        }
+        document.getElementById('quizContainer').innerHTML += `
+            <p>${selected === current.answer ? 'Correct!' : `Wrong! Correct answer: ${current.answer}`}</p>
+            <p>You earned ${questionScore} points. Total Score: ${score}</p>
+            <button class='btn' onclick='nextQuestion()'>Next</button>
+        `;
+        updateProgressBar();
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        showQuestion();
+    }
+
+    function updateProgressBar() {
+        const fill = document.getElementById('progressFill');
+        if (fill) {
+            fill.style.width = `${score}%`;
+            fill.innerText = `${score}`;
+        }
+    }
+
+    function showResult() {
+        if (score >= 30) launchCelebration();
+        document.getElementById('quizContainer').innerHTML = `
+            <h2>Quiz Completed!</h2>
+            <p>${userName}, your total score is ${score}/100</p>
+            ${score >= 30 ? certificateHTML() : '<p>Sorry! You did not pass.</p>'}
+            <button class='btn' onclick='retakeQuiz()'>Retake Quiz</button>
+        `;
+    }
+
+    function certificateHTML() {
+        return `
+            <div class="certificate" id="certificate">
+                <h2>Certificate of Achievement</h2>
+                <p>This certifies that</p>
+                <h3>${userName}</h3>
+                <p>has successfully passed the Periodic Table Quiz</p>
+                <p>with a score of ${score}/100</p>
+            </div>
+            <button class='btn' onclick='printCertificate()'>Print Certificate</button>
+            <button class='btn' onclick='downloadCertificatePDF()'>Download PDF</button>
+        `;
+    }
+
+    function printCertificate() {
+        const printContent = document.getElementById('certificate').outerHTML;
+        const originalContent = document.body.innerHTML;
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload();
+    }
+
+    function downloadCertificatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("Certificate of Achievement", 20, 30);
+        doc.text(`This certifies that ${userName}`, 20, 50);
+        doc.text(`has successfully passed the Periodic Table Quiz`, 20, 65);
+        doc.text(`with a score of ${score}/100`, 20, 80);
+        doc.save('certificate.pdf');
+    }
+
+    function launchCelebration() {
+        confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+    }
+
+    function retakeQuiz() {
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
