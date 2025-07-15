@@ -199,11 +199,11 @@
     }
 
     function showResult() {
-        if (score >= 30) launchCelebration();
+        if (score >= 75) launchCelebration();
         document.getElementById('quizContainer').innerHTML = `
             <h2>Quiz Completed!</h2>
             <p>${userName}, your total score is ${score}/100</p>
-            ${score >= 30 ? certificateHTML() : '<p>Sorry! You did not pass.</p>'}
+            ${score >= 75 ? certificateHTML() : '<p>Sorry! You did not pass.</p>'}
             <button class='btn' onclick='retakeQuiz()'>Retake Quiz</button>
         `;
     }
